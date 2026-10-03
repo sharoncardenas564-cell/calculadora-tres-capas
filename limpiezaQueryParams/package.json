@@ -1,0 +1,8 @@
+{
+  "name": "limpieza-query-params",
+  "version": "1.0.0",
+  "description": "Microservicio de limpieza (capa 2) - Query Params",
+  "main": "index.js",
+  "scripts": { "start": "node index.js" },
+  "engines": { "node": ">=18" }
+}

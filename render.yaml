@@ -1,0 +1,56 @@
+services:
+  # ---------- Capa 3: lógica de negocio ----------
+  - type: web
+    name: sumar-body-params
+    runtime: node
+    rootDir: sumarBodyParams
+    buildCommand: npm install
+    startCommand: npm start
+    plan: free
+  - type: web
+    name: sumar-path-params
+    runtime: node
+    rootDir: sumarPathParams
+    buildCommand: npm install
+    startCommand: npm start
+    plan: free
+  - type: web
+    name: sumar-query-params
+    runtime: node
+    rootDir: sumarQueryParams
+    buildCommand: npm install
+    startCommand: npm start
+    plan: free
+
+  # ---------- Capa 2: limpieza ----------
+  # SUMAR_URL se debe ajustar con la URL pública real de cada servicio "sumar"
+  - type: web
+    name: limpieza-body-params
+    runtime: node
+    rootDir: limpiezaBodyParams
+    buildCommand: npm install
+    startCommand: npm start
+    plan: free
+    envVars:
+      - key: SUMAR_URL
+        value: https://sumar-body-params.onrender.com
+  - type: web
+    name: limpieza-path-params
+    runtime: node
+    rootDir: limpiezaPathParams
+    buildCommand: npm install
+    startCommand: npm start
+    plan: free
+    envVars:
+      - key: SUMAR_URL
+        value: https://sumar-path-params.onrender.com
+  - type: web
+    name: limpieza-query-params
+    runtime: node
+    rootDir: limpiezaQueryParams
+    buildCommand: npm install
+    startCommand: npm start
+    plan: free
+    envVars:
+      - key: SUMAR_URL
+        value: https://sumar-query-params.onrender.com

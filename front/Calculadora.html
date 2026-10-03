@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora - Tres capas</title>
+</head>
+<body>
+
+<input type="text" id="dato1" style="width:1000px;" placeholder="Dato1">
+<br><br><br>
+<input type="text" id="dato2" style="width:1000px;" placeholder="Dato2">
+<br><br><br>
+<button id="btnBody" style="background-color:red; color:white;">+ Body Params</button>
+<button id="btnPath" style="background-color:blue; color:white;">+ Path Params</button>
+<button id="btnQuery" style="background-color:green; color:white;">+ Query Params</button>
+<br><br><br>
+<input type="text" id="resultado" style="width:1000px;" placeholder="Resultado">
+<br><br>
+<span id="metodo" style="font-family:monospace;"></span>
+
+<script>
+// ============================================================
+// URLs de los microservicios de LIMPIEZA (capa 2).
+// Local: puertos 3001-3003.  Nube: reemplazar por las URLs de Render.
+// ============================================================
+const URL_LIMPIEZA_BODY  = 'http://127.0.0.1:3001';
+const URL_LIMPIEZA_PATH  = 'http://127.0.0.1:3002';
+const URL_LIMPIEZA_QUERY = 'http://127.0.0.1:3003';
+
+function leerDatos() {
+  return {
+    dato1: document.getElementById('dato1').value,
+    dato2: document.getElementById('dato2').value
+  };
+}
+
+function mostrar(metodo, datos) {
+  document.getElementById('metodo').textContent = metodo;
+  document.getElementById('resultado').value =
+    datos.error ? 'Error: ' + datos.error : datos.resultado;
+}
+
+function mostrarFallo(metodo) {
+  document.getElementById('metodo').textContent = metodo;
+  document.getElementById('resultado').value = 'Error: no se pudo contactar el servicio';
+}
+
+// 1) BODY PARAMS -> POST con JSON en el cuerpo
+document.getElementById('btnBody').addEventListener('click', () => {
+  const { dato1, dato2 } = leerDatos();
+  const metodo = 'Body Params: POST ' + URL_LIMPIEZA_BODY + '  body={dato1,dato2}';
+
+  fetch(URL_LIMPIEZA_BODY, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ dato1, dato2 })
+  })
+  .then(r => r.json())
+  .then(datos => mostrar(metodo, datos))
+  .catch(() => mostrarFallo(metodo));
+});
+
+// 2) PATH PARAMS -> GET /limpiar/:dato1/:dato2
+document.getElementById('btnPath').addEventListener('click', () => {
+  const { dato1, dato2 } = leerDatos();
+  const url = URL_LIMPIEZA_PATH + '/limpiar/' + encodeURIComponent(dato1) + '/' + encodeURIComponent(dato2);
+  const metodo = 'Path Params: GET ' + url;
+
+  fetch(url)
+  .then(r => r.json())
+  .then(datos => mostrar(metodo, datos))
+  .catch(() => mostrarFallo(metodo));
+});
+
+// 3) QUERY PARAMS -> GET /?dato1=..&dato2=..
+document.getElementById('btnQuery').addEventListener('click', () => {
+  const { dato1, dato2 } = leerDatos();
+  const url = URL_LIMPIEZA_QUERY + '/?dato1=' + encodeURIComponent(dato1) + '&dato2=' + encodeURIComponent(dato2);
+  const metodo = 'Query Params: GET ' + url;
+
+  fetch(url)
+  .then(r => r.json())
+  .then(datos => mostrar(metodo, datos))
+  .catch(() => mostrarFallo(metodo));
+});
+</script>
+
+</body>
+</html>
